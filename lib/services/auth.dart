@@ -30,10 +30,7 @@ class AuthService {
           following: [],
           profilePicture: '',
         );
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set(
+        users.doc(userCredential.user!.uid).set(
               userModel.toJson(),
             );
         response = 'success';

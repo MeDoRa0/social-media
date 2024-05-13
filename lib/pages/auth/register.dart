@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/pages/auth/login.dart';
+import 'package:social_media/services/auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,6 +19,22 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController userNameCon = TextEditingController();
   TextEditingController passwordCon = TextEditingController();
   TextEditingController emailController = TextEditingController();
+
+  register() async {
+    try {
+      String response = await AuthService().sighUp(
+          email: emailController.text,
+          passWord: passwordCon.text,
+          dispalyName: dispalyNameCon.text,
+          userName: userNameCon.text);
+      if (response == 'success') {
+      } else {
+        print(response);
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const Gap(20),
                 TextField(
                   controller: passwordCon,
+                  obscureText: true,
                   decoration: InputDecoration(
                     fillColor: kWhiteColor,
                     filled: true,
@@ -144,7 +162,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             )),
-                        onPressed: () {},
+                        onPressed: () {
+                          register();
+                        },
                         child: Text(
                           'Register',
                           style: TextStyle(color: kWhiteColor),
