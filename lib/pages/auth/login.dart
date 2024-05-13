@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/pages/auth/register.dart';
+import 'package:social_media/pages/auth/signout.dart';
 import 'package:social_media/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,6 +22,12 @@ class _LoginPageState extends State<LoginPage> {
       String response = await AuthService()
           .signIn(email: emailController.text, passWord: passwordCon.text);
       if (response == 'success') {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => testPage(),
+            ),
+            (route) => false);
         print('done');
       } else {
         print(response);
