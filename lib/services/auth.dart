@@ -43,11 +43,15 @@ class AuthService {
     return response;
   }
 
-  signin({required String email, required String passWord}) {
+  signIn({
+    required String email,
+    required String passWord,
+  }) async {
     String response = 'some error';
     try {
       if (email.isNotEmpty || passWord.isNotEmpty) {
-        _auth.signInWithEmailAndPassword(email: email, password: passWord);
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: passWord);
         response = 'success';
       } else {
         response = 'enter all fields';

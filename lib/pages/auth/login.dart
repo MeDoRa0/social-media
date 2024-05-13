@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/pages/auth/register.dart';
+import 'package:social_media/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +16,20 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordCon = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  signIn() async {
+    try {
+      String response = await AuthService()
+          .signIn(email: emailController.text, passWord: passwordCon.text);
+      if (response == 'success') {
+        print('done');
+      } else {
+        print(response);
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +117,9 @@ class _LoginPageState extends State<LoginPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         )),
-                    onPressed: () {},
+                    onPressed: () {
+                      signIn();
+                    },
                     child: Text(
                       'LOGIN',
                       style: TextStyle(color: kWhiteColor),
