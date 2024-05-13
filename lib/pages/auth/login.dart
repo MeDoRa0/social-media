@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/pages/auth/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController passwordCon = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +55,8 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(fontSize: 18),
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
               decoration: InputDecoration(
                 fillColor: kWhiteColor,
                 filled: true,
@@ -71,6 +74,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const Gap(20),
             TextField(
+              controller: passwordCon,
+              obscureText: true,
               decoration: InputDecoration(
                 fillColor: kWhiteColor,
                 filled: true,
@@ -106,16 +111,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
+            const Gap(20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('Don`t have and account'),
                 const Gap(30),
                 GestureDetector(
-                    child: Text(
-                  'Register now',
-                  style: TextStyle(color: kPrimaryColor),
-                )),
+                  onTap: () => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
+                      (route) => false),
+                  child: Text(
+                    'Register now',
+                    style: TextStyle(color: kPrimaryColor),
+                  ),
+                ),
               ],
             )
           ],
