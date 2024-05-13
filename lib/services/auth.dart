@@ -42,4 +42,19 @@ class AuthService {
     }
     return response;
   }
+
+  signin({required String email, required String passWord}) {
+    String response = 'some error';
+    try {
+      if (email.isNotEmpty || passWord.isNotEmpty) {
+        _auth.signInWithEmailAndPassword(email: email, password: passWord);
+        response = 'success';
+      } else {
+        response = 'enter all fields';
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+    return response;
+  }
 }
