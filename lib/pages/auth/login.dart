@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/layout.dart';
 import 'package:social_media/pages/auth/register.dart';
 import 'package:social_media/pages/auth/signout.dart';
 import 'package:social_media/services/auth.dart';
@@ -25,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => testPage(),
+              builder: (context) => LayoutPage(),
             ),
             (route) => false);
         print('done');
