@@ -1,6 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/pages/add.dart';
+import 'package:social_media/pages/home.dart';
+import 'package:social_media/pages/profile.dart';
+import 'package:social_media/pages/search.dart';
 
 class LayoutPage extends StatefulWidget {
   const LayoutPage({super.key});
@@ -11,15 +14,33 @@ class LayoutPage extends StatefulWidget {
 
 class _LayoutPageState extends State<LayoutPage> {
   int currentIndex = 0;
+  PageController pageController = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //pageview to enable user to navigate between pages by swip
+      body: PageView(
+        controller: pageController,
+        children: const [
+          HomePage(),
+          AddPage(),
+          SearchPage(),
+          ProfilePage(),
+        ],
+        //this will make each icon in bottom bar highlieted when its page is open
+        onPageChanged: (value) => setState(
+          () {
+            currentIndex = value;
+          },
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         elevation: 0,
         backgroundColor: kPrimaryColor.withOpacity(0.1),
         onDestinationSelected: (value) => setState(
           () {
             currentIndex = value;
+            pageController.jumpToPage(value);
           },
         ),
         selectedIndex: currentIndex,
