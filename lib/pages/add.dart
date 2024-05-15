@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/utils/image_picker.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -11,6 +14,7 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  Uint8List? file;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,14 +50,17 @@ class _AddPageState extends State<AddPage> {
               ],
             ),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: AssetImage(Assets.imagesMan),
-                  ),
-                ),
-              ),
+              child: file == null
+                  ? Container()
+                  : Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: MemoryImage(file!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
             ),
             Gap(30),
             ElevatedButton(
@@ -62,7 +69,12 @@ class _AddPageState extends State<AddPage> {
                 backgroundColor: kPrimaryColor,
                 padding: EdgeInsets.all(20),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                Uint8List myfile = await pickImage();
+                setState(() {
+                  file = myfile;
+                });
+              },
               child: Icon(
                 Icons.add_a_photo,
                 color: kWhiteColor,
