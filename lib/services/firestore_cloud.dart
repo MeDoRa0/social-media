@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/models/post_model.dart';
+import 'package:social_media/services/storage.dart';
 import 'package:uuid/uuid.dart';
 
 class CloudMethod {
@@ -12,11 +15,12 @@ class CloudMethod {
     required String userName,
     String?
         profilePicture, //i make it ? nullable , becuase user may not have profile picture
-    required String postImage,
+    required Uint8List file,
   }) {
     String response = 'something error';
     try {
       String postID = Uuid().v1();
+      String postImage = StorageMethod().uploadImagetoStorage(file);
       PostModel postModel = PostModel(
           userID: userID,
           userName: userName,
@@ -26,7 +30,7 @@ class CloudMethod {
           date: DateTime.now(),
           like: [],
           displayName: dispalyName,
-          profilePicture: profilePicture?? '');
+          profilePicture: profilePicture ?? '');
       posts.doc(postID).set(
             postModel.toJson(),
           );
