@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/services/firestore_cloud.dart';
 import 'package:social_media/utils/image_picker.dart';
 
 class AddPage extends StatefulWidget {
@@ -15,6 +16,18 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   Uint8List? file;
+  TextEditingController postController = TextEditingController();
+  uploadPost() async {
+    try {
+      String response = await CloudMethod().uploadPost(
+          post: postController.text,
+          userID: 'xBbiloH0hMepa2m19oHxxQQiw0N2',
+          dispalyName: 'mohamed',
+          userName: 'MeDoRa',
+          file: file!);
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +36,9 @@ class _AddPageState extends State<AddPage> {
         title: const Text('add post'),
         actions: [
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              uploadPost();
+            },
             icon: const Icon(Icons.post_add),
             label: const Text('Post'),
           ),
@@ -33,17 +48,18 @@ class _AddPageState extends State<AddPage> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   backgroundImage: AssetImage(Assets.imagesMan),
                 ),
-                Gap(30),
+                const Gap(30),
                 Expanded(
                   child: TextField(
+                    controller: postController,
                     maxLines: 5,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         border: InputBorder.none, hintText: 'type here...'),
                   ),
                 ),
@@ -62,12 +78,12 @@ class _AddPageState extends State<AddPage> {
                       ),
                     ),
             ),
-            Gap(30),
+            const Gap(30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
+                shape: const CircleBorder(),
                 backgroundColor: kPrimaryColor,
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
               ),
               onPressed: () async {
                 Uint8List myfile = await pickImage();

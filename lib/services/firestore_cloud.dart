@@ -16,11 +16,11 @@ class CloudMethod {
     String?
         profilePicture, //i make it ? nullable , becuase user may not have profile picture
     required Uint8List file,
-  }) {
+  }) async {
     String response = 'something error';
     try {
       String postID = Uuid().v1();
-      String postImage = StorageMethod().uploadImagetoStorage(file);
+      String postImage = await StorageMethod().uploadImagetoStorage(file);
       PostModel postModel = PostModel(
           userID: userID,
           userName: userName,
