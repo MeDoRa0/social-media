@@ -36,7 +36,7 @@ class _LayoutPageState extends State<LayoutPage> {
       ),
       bottomNavigationBar: NavigationBar(
         elevation: 0,
-        backgroundColor: kPrimaryColor.withOpacity(0.1),
+        backgroundColor: kWhiteColor.withOpacity(0.8),
         onDestinationSelected: (value) => setState(
           () {
             currentIndex = value;
