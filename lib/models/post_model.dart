@@ -43,10 +43,10 @@ class PostModel {
         'userName': userName,
         'post': post,
         'postID': postID,
-        'pistImage': postImage,
+        'postImage': postImage,
         'displayName': displayName,
         'profilePicture': profilePicture,
-        'date':date,
-        'like':like,
+        'date': date,
+        'like': like,
       };
 }

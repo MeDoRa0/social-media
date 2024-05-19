@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/widgets/post_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -54,81 +55,13 @@ class _HomePageState extends State<HomePage> {
 
             if (snapshot.connectionState == ConnectionState.done) {
               // Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-              dynamic data = snapshot.data! as dynamic;
+              dynamic data = snapshot.data!;
+
               return ListView.builder(
                 itemCount: data.docs.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kPrimaryColor.withOpacity(0.1),
-                      ),
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(Assets.imagesMan),
-                              ),
-                              Gap(10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Mohamed'),
-                                  Text('@MeDoRa'),
-                                ],
-                              ),
-                              Spacer(),
-                              Text('5/17/2024')
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 300,
-                                  decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(Assets.imagesWoman),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(20),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  data.docs[index]['post'],
-                                  maxLines: 3,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.favorite_border),
-                              ),
-                              Text('0'),
-                              Gap(20),
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.comment),
-                              ),
-                              Text('0')
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
+                  dynamic item = data.docs[index];
+                  return PostCard(item: item);
                 },
               );
             }
