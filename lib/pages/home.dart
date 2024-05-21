@@ -44,29 +44,23 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: FutureBuilder(
-          future: posts.get(),
+      body: StreamBuilder(
+          stream: posts.orderBy('date', descending: true).snapshots(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Something went wrong"),
-              );
+            if (snapshot.hasError) {}
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
             }
 
-            if (snapshot.connectionState == ConnectionState.done) {
-              // Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-              dynamic data = snapshot.data!;
+            // Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
 
-              return ListView.builder(
-                itemCount: data.docs.length,
-                itemBuilder: (context, index) {
-                  dynamic item = data.docs[index];
-                  return PostCard(item: item);
-                },
-              );
-            }
-            return Center(
-              child: CircularProgressIndicator(),
+            return ListView.builder(
+              itemCount: snapshot.data.docs.length,
+              itemBuilder: (context, index) {
+                dynamic data = snapshot.data!;
+                dynamic item = data.docs[index];
+                return PostCard(item: item);
+              },
             );
           }),
     );
