@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
@@ -14,7 +15,9 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
+  late TabController _tabController = TabController(length: 2, vsync: this);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +116,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ],
-            )
+            ),
+            Gap(10),
+            TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: 'posts',
+                ),
+                Tab(
+                  text: 'photos',
+                )
+              ],
+            ),
+            // we must warp TabBarView with Expanded if it is inside column or Row
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Container(
+                    child: Text('posts'),
+                  ),
+                  Container(
+                    child: Text('photos'),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
