@@ -6,6 +6,7 @@ import 'package:social_media/colors.dart';
 import 'package:social_media/layout.dart';
 import 'package:social_media/pages/auth/register.dart';
 import 'package:social_media/services/auth.dart';
+import 'package:social_media/widgets/custom_textfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -76,42 +77,16 @@ class _LoginPageState extends State<LoginPage> {
               'Welcome Back',
               style: TextStyle(fontSize: 18),
             ),
-            TextField(
-              keyboardType: TextInputType.emailAddress,
+            CustomTextfield(
               controller: emailController,
-              decoration: InputDecoration(
-                fillColor: kWhiteColor,
-                filled: true,
-                prefixIcon: const Icon(Icons.email),
-                hintText: 'enter your email',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
+              hintText: 'enter your email',
+              icon: Icons.email,
             ),
             const Gap(20),
-            TextField(
+            CustomTextfield(
               controller: passwordCon,
-              obscureText: true,
-              decoration: InputDecoration(
-                fillColor: kWhiteColor,
-                filled: true,
-                prefixIcon: const Icon(Icons.password),
-                hintText: 'enter your password',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
+              hintText: 'enter your password',
+              icon: Icons.password,
             ),
             const Gap(20),
             Row(

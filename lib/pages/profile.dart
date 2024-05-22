@@ -2,9 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/models/user_model.dart';
+import 'package:social_media/pages/edit_profile.dart';
+import 'package:social_media/provider/user_provider.dart';
 import 'package:social_media/widgets/followers_card.dart';
+import 'package:social_media/widgets/post_card.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,12 +23,24 @@ class _ProfilePageState extends State<ProfilePage>
   late final TabController _tabController =
       TabController(length: 2, vsync: this);
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    UserModel userModel = Provider.of<UserProvider>(context).userModel!;
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditProfile(),
+                  ));
+            },
             icon: const Icon(Icons.edit),
           ),
           IconButton(
@@ -54,14 +71,14 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: ListTile(
-                    contentPadding: EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
                     title: Text(
-                      'display name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      userModel.displayName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text('@username'),
+                    subtitle: Text('@' + userModel.userName),
                   ),
                 ),
                 ElevatedButton(
@@ -128,17 +145,44 @@ class _ProfilePageState extends State<ProfilePage>
                 )
               ],
             ),
-            Gap(20),
+            const Gap(20),
             // we must warp TabBarView with Expanded if it is inside column or Row
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  Container(
-                    child: const Text('posts'),
+                  FutureBuilder(
+                    //to get all post of this user
+                    future: FirebaseFirestore.instance
+                        .collection('post')
+                        .where('userID',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        .get(),
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text('error');
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return ListView.builder(
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            dynamic item = snapshot.data.docs[index];
+                            return PostCard(item: item);
+                          },
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                   FutureBuilder(
-                    future: FirebaseFirestore.instance.collection('post').get(),
+                    //to get all photos of this user
+                    future: FirebaseFirestore.instance
+                        .collection('post')
+                        .where('userID',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        .get(),
                     builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.hasError) {
                         return const Text('error');
@@ -154,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage>
                           itemBuilder: (context, index) {
                             dynamic item = snapshot.data.docs[index];
                             return Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 image: DecorationImage(
