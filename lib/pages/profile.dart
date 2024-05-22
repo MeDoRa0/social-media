@@ -1,9 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
-import 'package:image_stack/image_stack.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/widgets/followers_card.dart';
@@ -17,7 +15,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-  late TabController _tabController = TabController(length: 2, vsync: this);
+  late final TabController _tabController =
+      TabController(length: 2, vsync: this);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,37 +24,37 @@ class _ProfilePageState extends State<ProfilePage>
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
           ),
           IconButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 40,
                   backgroundImage: AssetImage(Assets.imagesMan),
                 ),
-                Spacer(),
+                const Spacer(),
                 FollowersCard(
                   text: 'followers',
                 ),
-                Gap(10),
+                const Gap(10),
                 FollowersCard(text: 'following'),
               ],
             ),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: ListTile(
                     contentPadding: EdgeInsets.all(0),
                     title: Text(
@@ -72,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage>
                     backgroundColor: kPrimaryColor.withOpacity(0.7),
                   ),
                   onPressed: () {},
-                  child: Row(
+                  child: const Row(
                     children: [
                       Text(
                         'follow',
@@ -85,24 +84,24 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
+                    shape: const CircleBorder(),
                     foregroundColor: kWhiteColor,
                     elevation: 0,
                     backgroundColor: kPrimaryColor.withOpacity(0.7),
                   ),
                   onPressed: () {},
-                  child: Icon(
+                  child: const Icon(
                     Icons.message,
                   ),
                 ),
               ],
             ),
-            Gap(10),
+            const Gap(10),
             Row(
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: kPrimaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -117,10 +116,10 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ],
             ),
-            Gap(10),
+            const Gap(10),
             TabBar(
               controller: _tabController,
-              tabs: [
+              tabs: const [
                 Tab(
                   text: 'posts',
                 ),
@@ -129,16 +128,50 @@ class _ProfilePageState extends State<ProfilePage>
                 )
               ],
             ),
+            Gap(20),
             // we must warp TabBarView with Expanded if it is inside column or Row
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
                   Container(
-                    child: Text('posts'),
+                    child: const Text('posts'),
                   ),
-                  Container(
-                    child: Text('photos'),
+                  FutureBuilder(
+                    future: FirebaseFirestore.instance.collection('post').get(),
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text('error');
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return GridView.builder(
+                          itemCount: snapshot.data.docs.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisSpacing: 3,
+                                  crossAxisSpacing: 3,
+                                  crossAxisCount: 3),
+                          itemBuilder: (context, index) {
+                            dynamic item = snapshot.data.docs[index];
+                            return Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                    item['postImage'],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ],
               ),
