@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/models/user_model.dart';
+import 'package:social_media/provider/user_provider.dart';
 import 'package:social_media/widgets/custom_textfield.dart';
 
 class EditProfile extends StatefulWidget {
@@ -14,6 +17,11 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
+    UserModel userModel = Provider.of<UserProvider>(context).userModel!;
+    TextEditingController displayCont = TextEditingController();
+    TextEditingController bioCont = TextEditingController();
+    displayCont.text = userModel.displayName;
+    bioCont.text = userModel.bio;
     return Scaffold(
       appBar: AppBar(
         title: Text('edit profile'),
@@ -54,11 +62,13 @@ class _EditProfileState extends State<EditProfile> {
               ),
               Gap(20),
               CustomTextfield(
+                controller: displayCont,
                 labelText: 'display name',
                 icon: Icons.person,
               ),
               Gap(20),
               CustomTextfield(
+                controller: bioCont,
                 labelText: 'bio',
                 icon: Icons.info,
               ),
