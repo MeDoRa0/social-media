@@ -3,11 +3,16 @@ import 'package:social_media/colors.dart';
 
 class CustomTextfield extends StatelessWidget {
   const CustomTextfield(
-      {super.key, required this.controller, required this.hintText,required this.icon});
+      {super.key,
+      this.controller,
+      this.hintText = '',
+      this.icon,
+      this.labelText = ''});
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hintText;
- final IconData icon;
+  final IconData? icon;
+  final String labelText;
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +20,11 @@ class CustomTextfield extends StatelessWidget {
       keyboardType: TextInputType.emailAddress,
       controller: controller,
       decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(color: kPrimaryColor),
         fillColor: kWhiteColor,
         filled: true,
-        prefixIcon:  Icon(icon),
+        prefixIcon: Icon(icon),
         hintText: hintText,
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
