@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +7,7 @@ import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/models/user_model.dart';
 import 'package:social_media/provider/user_provider.dart';
+import 'package:social_media/utils/image_picker.dart';
 import 'package:social_media/widgets/custom_textfield.dart';
 
 class EditProfile extends StatefulWidget {
@@ -15,6 +18,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  Uint8List? file;
   @override
   Widget build(BuildContext context) {
     UserModel userModel = Provider.of<UserProvider>(context).userModel!;
@@ -36,10 +40,15 @@ class _EditProfileState extends State<EditProfile> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage(Assets.imagesMan),
-                      radius: 70,
-                    ),
+                    file == null
+                        ? CircleAvatar(
+                            backgroundImage: AssetImage(Assets.imagesMan),
+                            radius: 70,
+                          )
+                        : CircleAvatar(
+                            radius: 70,
+                            backgroundImage: MemoryImage(file!),
+                          ),
                     Positioned(
                       bottom: -10,
                       right: -10,
@@ -50,7 +59,12 @@ class _EditProfileState extends State<EditProfile> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          Uint8List _file = await pickImage();
+                          setState(() {
+                            file = _file;
+                          });
+                        },
                         icon: Icon(
                           Icons.edit,
                           color: kWhiteColor,
