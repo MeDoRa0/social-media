@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:social_media/models/post_model.dart';
 import 'package:social_media/services/storage.dart';
 import 'package:uuid/uuid.dart';
@@ -50,22 +51,24 @@ class CloudMethod {
       Uint8List? file,
       String bio = '',
       String profilePicture = ''}) async {
-    String responce = 'something error';
+    String response = 'something error';
     try {
-      profilePicture =
-          await StorageMethod().uploadImagetoStorage(file!, 'users', false);
+      profilePicture = file != null
+          ? await StorageMethod().uploadImagetoStorage(file!, 'users', false)
+          : '';
+      if (displayName != '' && userName != '') {
+        users.doc(userID).update({
+          'displayName': displayName,
+          'userName': userName,
+          'bio': bio,
+          'profilePicture': profilePicture
+        });
+        response = 'success';
+      }
+      return response;
     } on Exception catch (e) {
-      // TODO
+      //TODO
     }
-    if (displayName != '' && userName != '') {
-      users.doc(userID).update({
-        'displayName': displayName,
-        'userName': userName,
-        'bio': bio,
-        'profilePicture': profilePicture
-      });
-      responce = 'success';
-    }
-    return responce;
+    return response;
   }
 }

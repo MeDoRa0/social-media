@@ -10,6 +10,7 @@ import 'package:social_media/pages/edit_profile.dart';
 import 'package:social_media/provider/user_provider.dart';
 import 'package:social_media/widgets/followers_card.dart';
 import 'package:social_media/widgets/post_card.dart';
+import 'package:social_media/widgets/profile_picture.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage>
       TabController(length: 2, vsync: this);
   @override
   void initState() {
+    Provider.of<UserProvider>(context, listen: false).getDetails();
     super.initState();
   }
 
@@ -36,10 +38,11 @@ class _ProfilePageState extends State<ProfilePage>
           IconButton(
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EditProfile(),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfile(),
+                ),
+              );
             },
             icon: const Icon(Icons.edit),
           ),
@@ -57,10 +60,7 @@ class _ProfilePageState extends State<ProfilePage>
           children: [
             Row(
               children: [
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage(Assets.imagesMan),
-                ),
+             ProfilePic(),
                 const Spacer(),
                 FollowersCard(
                   text: 'followers',
