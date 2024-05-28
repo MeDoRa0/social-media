@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class CloudMethod {
   CollectionReference posts = FirebaseFirestore.instance.collection('post');
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   uploadPost({
     required String post,
@@ -20,7 +21,8 @@ class CloudMethod {
     String response = 'something error';
     try {
       String postID = Uuid().v1();
-      String postImage = await StorageMethod().uploadImagetoStorage(file);
+      String postImage =
+          await StorageMethod().uploadImagetoStorage(file, 'posts', true);
       PostModel postModel = PostModel(
           userID: userID,
           userName: userName,
@@ -39,5 +41,31 @@ class CloudMethod {
       response = e.toString();
     }
     return response;
+  }
+
+  editProfile(
+      {required String userID,
+      required String displayName,
+      required String userName,
+      Uint8List? file,
+      String bio = '',
+      String profilePicture = ''}) async {
+    String responce = 'something error';
+    try {
+      profilePicture =
+          await StorageMethod().uploadImagetoStorage(file!, 'users', false);
+    } on Exception catch (e) {
+      // TODO
+    }
+    if (displayName != '' && userName != '') {
+      users.doc(userID).update({
+        'displayName': displayName,
+        'userName': userName,
+        'bio': bio,
+        'profilePicture': profilePicture
+      });
+      responce = 'success';
+    }
+    return responce;
   }
 }
