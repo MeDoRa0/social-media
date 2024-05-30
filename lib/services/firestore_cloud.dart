@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:social_media/models/post_model.dart';
 import 'package:social_media/services/storage.dart';
 import 'package:uuid/uuid.dart';
@@ -40,6 +39,37 @@ class CloudMethod {
       response = 'post done';
     } catch (e) {
       response = e.toString();
+    }
+    return response;
+  }
+
+//comment method
+  commentToPost({
+    required String postID,
+    required String userID,
+    required String commentText,
+    required String profilePicture,
+    required String displayName,
+    required String userName,
+  }) async {
+    String response = 'somthing error';
+    try {
+      if (commentText.isNotEmpty) {
+        String commentID = Uuid().v1();
+        posts.doc(postID).collection('comments').doc(commentID).set({
+          'userID': userID,
+          'postID': postID,
+          'commentID': commentID,
+          'commentText': commentText,
+          'profilePicture': profilePicture,
+          'displayName': displayName,
+          'userName': userName,
+          'date': DateTime.now(),
+        });
+        response = 'success';
+      }
+    } on Exception catch (e) {
+      // TODO
     }
     return response;
   }
