@@ -78,12 +78,14 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(fontSize: 18),
             ),
             CustomTextfield(
+              keyboardType: TextInputType.emailAddress,
               controller: emailController,
               hintText: 'enter your email',
               icon: Icons.email,
             ),
             const Gap(20),
             CustomTextfield(
+              keyboardType: TextInputType.visiblePassword,
               controller: passwordCon,
               hintText: 'enter your password',
               icon: Icons.password,

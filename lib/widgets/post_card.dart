@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/pages/comment_screen.dart';
 
 class PostCard extends StatefulWidget {
   final item;
@@ -90,7 +91,14 @@ class _PostCardState extends State<PostCard> {
                 Text('0'),
                 Gap(20),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommentScreen(),
+                      ),
+                    );
+                  },
                   icon: Icon(Icons.comment),
                 ),
                 Text('0')

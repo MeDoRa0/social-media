@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 //this method is used to pick image in post
 pickImage() async {
   final ImagePicker imagePicker = ImagePicker();
-  XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
+  XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
   if (file != null) {
     return await file.readAsBytes();
   }
