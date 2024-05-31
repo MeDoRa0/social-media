@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,30 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  int cmmentCount = 0;
+  getCommentCount() async {
+    try {
+      QuerySnapshot comment = await FirebaseFirestore.instance
+          .collection('post')
+          .doc(widget.item['postID'])
+          .collection('comments')
+          .get();
+      if (this.mounted) {
+        setState(() {
+          cmmentCount = comment.docs.length;
+        });
+      }
+    } on Exception catch (e) {
+      // TODO
+    }
+  }
+
   @override
+  void initState() {
+    getCommentCount();
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -29,14 +53,14 @@ class _PostCardState extends State<PostCard> {
             Row(
               children: [
                 widget.item['profilePicture'] == ''
-                    ? CircleAvatar(
+                    ? const CircleAvatar(
                         backgroundImage: AssetImage(Assets.imagesMan),
                       )
                     : CircleAvatar(
                         backgroundImage:
                             NetworkImage(widget.item['profilePicture']),
                       ),
-                Gap(10),
+                const Gap(10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -44,7 +68,7 @@ class _PostCardState extends State<PostCard> {
                     Text('@' + widget.item['userName']),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 Text(
                   DateFormat.yMMMd().format(
                     widget.item['date'].toDate(),
@@ -57,7 +81,7 @@ class _PostCardState extends State<PostCard> {
                 Expanded(
                   child: widget.item['postImage'] != ''
                       ? Container(
-                          margin: EdgeInsets.all(12),
+                          margin: const EdgeInsets.all(12),
                           height: 300,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
@@ -86,22 +110,27 @@ class _PostCardState extends State<PostCard> {
               children: [
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.favorite_border),
+                  icon: const Icon(Icons.favorite_border),
                 ),
-                Text('0'),
-                Gap(20),
+                const Text('0'),
+                const Gap(20),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentScreen(),
+                        builder: (context) => CommentScreen(
+                          postID: widget.item['postID'],
+                        ),
                       ),
                     );
+                    getCommentCount();
                   },
-                  icon: Icon(Icons.comment),
+                  icon: const Icon(Icons.comment),
                 ),
-                Text('0')
+                Text(
+                  cmmentCount.toString(),
+                ),
               ],
             )
           ],
