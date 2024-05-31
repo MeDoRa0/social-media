@@ -74,6 +74,36 @@ class CloudMethod {
     return response;
   }
 
+  likePost(String postID, String userID, List like) async {
+    String response = 'somthing error';
+    try {
+      //if the user liked this post before and press on like , unlike the post
+      if (like.contains(userID)) {
+        posts.doc(postID).update(
+          {
+            'like': FieldValue.arrayRemove(
+              [userID],
+            ),
+          },
+        );
+        //if the user did not like this post before and press on like , like the post
+      } else {
+        (
+          posts.doc(postID).update(
+            {
+              'like': FieldValue.arrayUnion(
+                [userID],
+              ),
+            },
+          ),
+        );
+        response = 'success';
+      }
+    } on Exception catch (e) {
+      // TODO
+    }
+  }
+
   editProfile(
       {required String userID,
       required String displayName,

@@ -2,9 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/models/user_model.dart';
 import 'package:social_media/pages/comment_screen.dart';
+import 'package:social_media/provider/user_provider.dart';
+import 'package:social_media/services/firestore_cloud.dart';
 
 class PostCard extends StatefulWidget {
   final item;
@@ -40,6 +44,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget build(BuildContext context) {
+    UserModel userModel = Provider.of<UserProvider>(context).userModel!;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Container(
@@ -109,10 +114,21 @@ class _PostCardState extends State<PostCard> {
             Row(
               children: [
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite_border),
+                  onPressed: () {
+                    CloudMethod().likePost(widget.item['postID'],
+                        userModel.userID, widget.item['like']);
+                    getCommentCount();
+                  },
+                  icon: widget.item['like'].contains(userModel.userID)
+                      ? Icon(
+                          Icons.favorite,
+                          color: kPrimaryColor,
+                        )
+                      : Icon(Icons.favorite_border),
                 ),
-                const Text('0'),
+                Text(
+                  widget.item['like'].length.toString(),
+                ),
                 const Gap(20),
                 IconButton(
                   onPressed: () {
