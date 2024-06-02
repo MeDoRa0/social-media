@@ -50,20 +50,20 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('edit profile'),
+        title: const Text('edit profile'),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              Gap(20),
+              const Gap(20),
               Center(
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     file == null
-                        ? CircleAvatar(
+                        ? const CircleAvatar(
                             backgroundImage: AssetImage(Assets.imagesMan),
                             radius: 70,
                           )
@@ -96,19 +96,19 @@ class _EditProfileState extends State<EditProfile> {
                   ],
                 ),
               ),
-              Gap(20),
+              const Gap(20),
               CustomTextfield(
                 controller: displayCont,
                 labelText: 'display name',
                 icon: Icons.person,
               ),
-              Gap(20),
+              const Gap(20),
               CustomTextfield(
                 controller: bioCont,
                 labelText: 'bio',
                 icon: Icons.info,
               ),
-              Gap(20),
+              const Gap(20),
               Row(
                 children: [
                   Expanded(

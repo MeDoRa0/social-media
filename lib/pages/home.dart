@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/widgets/post_card.dart';
 
@@ -49,7 +47,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasError) {}
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             // Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;

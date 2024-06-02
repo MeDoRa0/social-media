@@ -15,7 +15,7 @@ class FollowersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: kPrimaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -29,12 +29,12 @@ class FollowersCard extends StatelessWidget {
                   imageBorderColor: kWhiteColor,
                   imageRadius: 40,
                   imageSource: ImageSource.Asset,
-                  imageList: [Assets.imagesMan, Assets.imagesWoman],
+                  imageList: const [Assets.imagesMan, Assets.imagesWoman],
                   totalCount: 0),
               Row(
                 children: [
-                  Text('0'),
-                  Gap(5),
+                  const Text('0'),
+                  const Gap(5),
                   Text(text),
                 ],
               )

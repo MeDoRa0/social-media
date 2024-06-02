@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
 import 'package:social_media/models/user_model.dart';
 import 'package:social_media/provider/user_provider.dart';
@@ -58,7 +57,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -83,11 +82,11 @@ class _CommentScreenState extends State<CommentScreen> {
                                   backgroundImage:
                                       NetworkImage(data['profilePicture']),
                                 ),
-                                Gap(10),
+                                const Gap(10),
                                 Text(data['displayName']),
                               ],
                             ),
-                            Gap(10),
+                            const Gap(10),
                             Row(
                               children: [
                                 Expanded(

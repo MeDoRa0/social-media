@@ -26,7 +26,7 @@ class _LayoutPageState extends State<LayoutPage> {
   @override
   Widget build(BuildContext context) {
     return Provider.of<UserProvider>(context).isLoad
-        ? Scaffold(
+        ? const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
@@ -35,10 +35,10 @@ class _LayoutPageState extends State<LayoutPage> {
             //pageview to enable user to navigate between pages by swip
             body: PageView(
               controller: pageController,
-              children: const [
-                HomePage(),
-                AddPage(),
-                SearchPage(),
+              children: [
+                const HomePage(),
+                const AddPage(),
+                const SearchPage(),
                 ProfilePage(),
               ],
               //this will make each icon in bottom bar highlieted when its page is open

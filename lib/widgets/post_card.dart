@@ -124,7 +124,7 @@ class _PostCardState extends State<PostCard> {
                           Icons.favorite,
                           color: kPrimaryColor,
                         )
-                      : Icon(Icons.favorite_border),
+                      : const Icon(Icons.favorite_border),
                 ),
                 Text(
                   widget.item['like'].length.toString(),

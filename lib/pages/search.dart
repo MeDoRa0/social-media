@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/pages/profile.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -73,18 +74,31 @@ class _SearchPageState extends State<SearchPage> {
                       itemBuilder: (context, index) {
                         dynamic item = snapshot.data.docs[index];
 
-                        return ListTile(
-                          leading: item['profilePicture'] == ""
-                              ? const CircleAvatar(
-                                  backgroundImage: AssetImage(Assets.imagesMan),
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    item['profilePicture'],
-                                  ),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                  userID: item['userID'],
                                 ),
-                          title: Text(item['displayName']),
-                          subtitle: Text('@' + item['userName']),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: item['profilePicture'] == ""
+                                ? const CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage(Assets.imagesMan),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      item['profilePicture'],
+                                    ),
+                                  ),
+                            title: Text(item['displayName']),
+                            subtitle: Text('@' + item['userName']),
+                          ),
                         );
                       },
                     );
