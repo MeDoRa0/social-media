@@ -27,6 +27,7 @@ class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
   late final TabController _tabController =
       TabController(length: 2, vsync: this);
+  String currentUserID = FirebaseAuth.instance.currentUser!.uid;
   @override
   void initState() {
     widget.userID = widget.userID ?? FirebaseAuth.instance.currentUser!.uid;
@@ -62,27 +63,29 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           )
         : Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EditProfile(),
+            appBar: userInfo['userID'] == currentUserID
+                ? AppBar(
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EditProfile(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                  },
-                  icon: const Icon(Icons.logout),
-                ),
-              ],
-            ),
+                      IconButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                        },
+                        icon: const Icon(Icons.logout),
+                      ),
+                    ],
+                  )
+                : AppBar(),
             body: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -110,59 +113,70 @@ class _ProfilePageState extends State<ProfilePage>
                           subtitle: Text('@' + userModel.userName),
                         ),
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: kWhiteColor,
-                          elevation: 0,
-                          backgroundColor: kPrimaryColor.withOpacity(0.7),
-                        ),
-                        onPressed: () {},
-                        child: const Row(
-                          children: [
-                            Text(
-                              'follow',
+                      //if this is the current user, dont show follow nor message, if not, show follow and message
+                      userInfo['userID'] == currentUserID
+                          ? Container()
+                          : Row(
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: kWhiteColor,
+                                    elevation: 0,
+                                    backgroundColor:
+                                        kPrimaryColor.withOpacity(0.7),
+                                  ),
+                                  onPressed: () {},
+                                  child: const Row(
+                                    children: [
+                                      Text(
+                                        'follow',
+                                      ),
+                                      Icon(
+                                        Icons.add,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    foregroundColor: kWhiteColor,
+                                    elevation: 0,
+                                    backgroundColor:
+                                        kPrimaryColor.withOpacity(0.7),
+                                  ),
+                                  onPressed: () {},
+                                  child: const Icon(
+                                    Icons.message,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Icon(
-                              Icons.add,
-                            ),
-                          ],
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          foregroundColor: kWhiteColor,
-                          elevation: 0,
-                          backgroundColor: kPrimaryColor.withOpacity(0.7),
-                        ),
-                        onPressed: () {},
-                        child: const Icon(
-                          Icons.message,
-                        ),
-                      ),
                     ],
                   ),
                   const Gap(10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Bio',
-                              style:
-                                  TextStyle(color: kPrimaryColor, fontSize: 16),
+                  userInfo['bio'] == ''
+                      ? Container()
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: kPrimaryColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    userInfo['bio'],
+                                    style: TextStyle(
+                                        color: kPrimaryColor, fontSize: 16),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                   const Gap(10),
                   TabBar(
                     controller: _tabController,
@@ -185,9 +199,7 @@ class _ProfilePageState extends State<ProfilePage>
                           //to get all post of this user
                           future: FirebaseFirestore.instance
                               .collection('post')
-                              .where('userID',
-                                  isEqualTo:
-                                      FirebaseAuth.instance.currentUser!.uid)
+                              .where('userID', isEqualTo: userInfo['userID'])
                               .get(),
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasError) {
@@ -196,10 +208,18 @@ class _ProfilePageState extends State<ProfilePage>
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               return ListView.builder(
-                                itemCount: snapshot.data.docs.length,
+                                itemCount: snapshot.data.docs.length == 0
+                                    ? 1
+                                    : snapshot.data.docs.length,
                                 itemBuilder: (context, index) {
-                                  dynamic item = snapshot.data.docs[index];
-                                  return PostCard(item: item);
+                                  dynamic item = snapshot.data.docs.length == 0
+                                      ? ''
+                                      : snapshot.data.docs[index];
+                                  return snapshot.data.docs.length == 0
+                                      ? Center(
+                                          child: Text('no post'),
+                                        )
+                                      : PostCard(item: item);
                                 },
                               );
                             }
@@ -212,9 +232,7 @@ class _ProfilePageState extends State<ProfilePage>
                           //to get all photos of this user
                           future: FirebaseFirestore.instance
                               .collection('post')
-                              .where('userID',
-                                  isEqualTo:
-                                      FirebaseAuth.instance.currentUser!.uid)
+                              .where('userID', isEqualTo: userInfo['userID'])
                               .get(),
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasError) {
@@ -223,26 +241,34 @@ class _ProfilePageState extends State<ProfilePage>
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               return GridView.builder(
-                                itemCount: snapshot.data.docs.length,
+                                itemCount: snapshot.data.docs.length == 0
+                                    ? 1
+                                    : snapshot.data.docs.length,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                         mainAxisSpacing: 3,
                                         crossAxisSpacing: 3,
                                         crossAxisCount: 3),
                                 itemBuilder: (context, index) {
-                                  dynamic item = snapshot.data.docs[index];
-                                  return Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                          item['postImage'],
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                  dynamic item = snapshot.data.docs.length == 0
+                                      ? ''
+                                      : snapshot.data.docs[index];
+
+                                  return snapshot.data.docs.length == 0
+                                      ? Text('no photos')
+                                      : Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                item['postImage'],
+                                              ),
+                                            ),
+                                          ),
+                                        );
                                 },
                               );
                             }
