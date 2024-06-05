@@ -131,4 +131,72 @@ class CloudMethod {
     }
     return response;
   }
+
+  /* followUser(String userID, String followUserID) async {
+    DocumentSnapshot documentSnapshot = await users.doc(userID).get();
+    //this method will check if the another user is in the current user`s following list, if true, remove the another user from following list
+    List following = (documentSnapshot.data()! as dynamic)['following'];
+    try {
+      if (following.contains(followUserID)) {
+        await users.doc(userID).update({
+          'following': FieldValue.arrayRemove([followUserID])
+        });
+        await users.doc(followUserID).update({
+          'followers': FieldValue.arrayRemove([userID])
+        });
+      } else {
+        //if another user is not in current user`s follwing list , add it in the list
+        await users.doc(userID).update({
+          'following': FieldValue.arrayUnion([followUserID])
+        });
+        //if current user is not in another user`s followers list , add it in the list
+        await users.doc(followUserID).update({
+          'followers': FieldValue.arrayUnion([userID])
+        });
+      }
+    } on Exception catch (e) {
+      // TODO
+    }
+  }*/
+  //same code as above but better
+  Future<void> followUser(String userID, String followUserID) async {
+    final userDoc = users.doc(userID);
+    final followUserDoc = users.doc(followUserID);
+
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot userSnapshot = await transaction.get(userDoc);
+        DocumentSnapshot followUserSnapshot =
+            await transaction.get(followUserDoc);
+
+        List following = userSnapshot['following'] ?? [];
+        List followers = followUserSnapshot['followers'] ?? [];
+
+        if (following.contains(followUserID)) {
+          // Remove followUserID from user's following list
+          transaction.update(userDoc, {
+            'following': FieldValue.arrayRemove([followUserID])
+          });
+
+          // Remove userID from followUser's followers list
+          transaction.update(followUserDoc, {
+            'followers': FieldValue.arrayRemove([userID])
+          });
+        } else {
+          // Add followUserID to user's following list
+          transaction.update(userDoc, {
+            'following': FieldValue.arrayUnion([followUserID])
+          });
+
+          // Add userID to followUser's followers list
+          transaction.update(followUserDoc, {
+            'followers': FieldValue.arrayUnion([userID])
+          });
+        }
+      });
+    } catch (e) {
+      // Handle exceptions, log error or provide user feedback
+      print("Error following/unfollowing user: $e");
+    }
+  }
 }

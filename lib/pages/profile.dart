@@ -7,6 +7,7 @@ import 'package:social_media/colors.dart';
 import 'package:social_media/models/user_model.dart';
 import 'package:social_media/pages/edit_profile.dart';
 import 'package:social_media/provider/user_provider.dart';
+import 'package:social_media/services/firestore_cloud.dart';
 import 'package:social_media/widgets/followers_card.dart';
 import 'package:social_media/widgets/post_card.dart';
 import 'package:social_media/widgets/profile_picture.dart';
@@ -38,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   var userInfo = {};
   bool isload = true;
+  bool isFollowing = false;
   getUserData() async {
     try {
       var userData = await FirebaseFirestore.instance
@@ -45,6 +47,8 @@ class _ProfilePageState extends State<ProfilePage>
           .doc(widget.userID)
           .get();
       userInfo = userData.data()!;
+      isFollowing =
+          (userData.data()! as dynamic)['followers'].contains(currentUserID);
       setState(() {
         isload = false;
       });
@@ -125,15 +129,25 @@ class _ProfilePageState extends State<ProfilePage>
                                     backgroundColor:
                                         kPrimaryColor.withOpacity(0.7),
                                   ),
-                                  onPressed: () {},
-                                  child: const Row(
+                                  onPressed: () {
+                                    try {
+                                      CloudMethod().followUser(
+                                          currentUserID, userInfo['userID']);
+                                      setState(() {
+                                        isFollowing = !isFollowing;
+                                      });
+                                    } on Exception catch (e) {
+                                      // TODO
+                                    }
+                                  },
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        'follow',
-                                      ),
-                                      Icon(
-                                        Icons.add,
-                                      ),
+                                      Text(isFollowing ? 'unfollow' : 'follow'),
+                                      isFollowing
+                                          ? Icon(Icons.remove)
+                                          : Icon(
+                                              Icons.add,
+                                            ),
                                     ],
                                   ),
                                 ),
