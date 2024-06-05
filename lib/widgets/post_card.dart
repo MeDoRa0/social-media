@@ -147,6 +147,12 @@ class _PostCardState extends State<PostCard> {
                 Text(
                   cmmentCount.toString(),
                 ),
+                Spacer(),
+                IconButton(
+                    onPressed: () {
+                      CloudMethod().deletePost(widget.item['postID']);
+                    },
+                    icon: Icon(Icons.delete))
               ],
             )
           ],

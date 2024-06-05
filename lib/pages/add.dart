@@ -2,8 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media/app_images.dart';
 import 'package:social_media/colors.dart';
+import 'package:social_media/models/user_model.dart';
+import 'package:social_media/provider/user_provider.dart';
 import 'package:social_media/services/firestore_cloud.dart';
 import 'package:social_media/utils/image_picker.dart';
 
@@ -17,19 +20,22 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   Uint8List? file;
   TextEditingController postController = TextEditingController();
-  uploadPost() async {
+  uploadPost(String userID, String displayName, String userName,
+      String profilePicture) async {
     try {
       String response = await CloudMethod().uploadPost(
           post: postController.text,
-          userID: 'xBbiloH0hMepa2m19oHxxQQiw0N2',
-          dispalyName: 'mohamed',
-          userName: 'MeDoRa',
+          userID: userID,
+          dispalyName: displayName,
+          userName: userName,
+          profilePicture: profilePicture,
           file: file!);
     } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
+    UserModel userModel = Provider.of<UserProvider>(context).userModel!;
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.white,
@@ -37,7 +43,8 @@ class _AddPageState extends State<AddPage> {
         actions: [
           TextButton.icon(
             onPressed: () {
-              uploadPost();
+              uploadPost(userModel.profilePicture, userModel.displayName,
+                  userModel.userName, userModel.profilePicture);
             },
             icon: const Icon(Icons.post_add),
             label: const Text('Post'),
@@ -86,13 +93,15 @@ class _AddPageState extends State<AddPage> {
                 padding: const EdgeInsets.all(20),
               ),
               onPressed: () async {
-                Uint8List myfile = await pickImage();
-                setState(() {
-                  file = myfile;
-                });
+                Uint8List? myfile = await pickImage(context);
+                if (myfile != null) {
+                  setState(() {
+                    file = myfile;
+                  });
+                }
               },
               child: Icon(
-                Icons.add_a_photo,
+                Icons.photo,
                 color: kWhiteColor,
               ),
             ),

@@ -199,4 +199,13 @@ class CloudMethod {
       print("Error following/unfollowing user: $e");
     }
   }
+
+  deletePost(String postID) async {
+    String response = 'error';
+    try {
+      await posts.doc(postID).delete();
+      response = 'success';
+    } catch (e) {}
+    return response;
+  }
 }

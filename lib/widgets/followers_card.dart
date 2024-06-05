@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_stack/image_stack.dart';
@@ -8,9 +7,11 @@ import 'package:social_media/colors.dart';
 class FollowersCard extends StatelessWidget {
   FollowersCard({
     required this.text,
+     required this.number,
     super.key,
   });
   String text;
+  int number;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class FollowersCard extends StatelessWidget {
                   totalCount: 0),
               Row(
                 children: [
-                  const Text('0'),
+                   Text(number.toString()),
                   const Gap(5),
                   Text(text),
                 ],

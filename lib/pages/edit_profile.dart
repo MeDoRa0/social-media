@@ -82,9 +82,14 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         onPressed: () async {
-                          Uint8List _file = await pickImage();
+                          Uint8List? myfile = await pickImage(context);
+                          if (myfile != null) {
+                            setState(() {
+                              file = myfile;
+                            });
+                          }
                           setState(() {
-                            file = _file;
+                            file = myfile;
                           });
                         },
                         icon: Icon(

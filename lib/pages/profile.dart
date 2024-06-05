@@ -40,6 +40,8 @@ class _ProfilePageState extends State<ProfilePage>
   var userInfo = {};
   bool isload = true;
   bool isFollowing = false;
+  int followers = 0;
+  int following = 0;
   getUserData() async {
     try {
       var userData = await FirebaseFirestore.instance
@@ -49,6 +51,8 @@ class _ProfilePageState extends State<ProfilePage>
       userInfo = userData.data()!;
       isFollowing =
           (userData.data()! as dynamic)['followers'].contains(currentUserID);
+      followers = userData.data()!['followers'].length;
+      following = userData.data()!['following'].length;
       setState(() {
         isload = false;
       });
@@ -100,9 +104,13 @@ class _ProfilePageState extends State<ProfilePage>
                       const Spacer(),
                       FollowersCard(
                         text: 'followers',
+                        number: followers,
                       ),
                       const Gap(10),
-                      FollowersCard(text: 'following'),
+                      FollowersCard(
+                        text: 'following',
+                        number: following,
+                      ),
                     ],
                   ),
                   Row(
@@ -134,6 +142,7 @@ class _ProfilePageState extends State<ProfilePage>
                                       CloudMethod().followUser(
                                           currentUserID, userInfo['userID']);
                                       setState(() {
+                                        isFollowing ? followers-- : followers++;
                                         isFollowing = !isFollowing;
                                       });
                                     } on Exception catch (e) {
